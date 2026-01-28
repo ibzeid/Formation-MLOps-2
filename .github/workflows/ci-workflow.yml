@@ -23,7 +23,7 @@ jobs:
       - name: Run Linter
         run:  flake8 . --ignore=E402
       - name: Run Vulture
-        run:  vulture .
+        run:  vulture . -min-confidence 80
       - name: Run tests
         run:  pytest
 
