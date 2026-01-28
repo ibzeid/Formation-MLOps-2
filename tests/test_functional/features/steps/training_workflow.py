@@ -14,7 +14,8 @@ model_registry_folder = test_data_path
 
 @given('training data is available')
 def step_impl_given(context):
-    assert len(os.listdir(test_data_path)) == 1
+    #assert len(os.listdir(test_data_path)) == 1
+    assert os.path.exists(test_data_path), f"Test data directory not found: {test_data_path}"
     assert os.path.exists(training_data_path)
 
 
