@@ -12,7 +12,6 @@ from formation_indus_ds_avancee.feature_engineering import prepare_features_with
 from formation_indus_ds_avancee.train_and_predict import predict_with_io
 
 
-
 @dag(default_args={'owner': 'airflow'}, schedule=timedelta(minutes=2),
      start_date=pendulum.today('UTC').add(hours=-1))
 def predict():
@@ -25,13 +24,21 @@ def predict():
         return features_path
 
     @task
-    def predict_with_io_task(feature_path: str) -> None:
-        predict_with_io(features_path=feature_path,
+    def predict_with_io_task(features_path: str):
+        predictions_path = os.path.join(DATA_FOLDER, f'predictions_{datetime.now()}.parquet')
+        predict_with_io(features_path=features_path,
                         model_path=MODEL_PATH,
                         predictions_folder=PREDICTIONS_FOLDER)
+        return predictions_path
 
+    
+    # Start completing predict task
+    #predict = PythonOperator()
+    # End completing predict task
+ 
+    # Task dependencies
     feature_path = prepare_features_with_io_task()
-    predict_with_io_task(feature_path=feature_path)
+    predict_with_io_task(features_path=feature_path)
 
 
 predict_dag = predict()
